@@ -7,19 +7,18 @@ export function middleware(request: NextRequest) {
 }
 
 /**
- * Uncomment the following code to enable authentication with Clerk
+ * The following code enables authentication with Clerk
  */
+const isProtectedRoute = createRouteMatcher(['/protected'])
 
-// const isProtectedRoute = createRouteMatcher(['/protected'])
+export default clerkMiddleware(async (_auth, req) => {
+    if (isProtectedRoute(req)) {
+      // Handle protected routes check here
+      return NextResponse.redirect(req.nextUrl.origin)
+    }
 
-// export default clerkMiddleware(async (auth, req) => {
-//     if (isProtectedRoute(req)) {
-//       // Handle protected routes check here
-//       return NextResponse.redirect(req.nextUrl.origin)
-//     }
-
-//     return NextResponse.next()
-// })  
+    return NextResponse.next()
+}) 
 
 export const config = {
   matcher: [

@@ -1,0 +1,291 @@
+---
+description: Apply these rules when creating the project
+globs:
+alwaysApply: true
+---
+## Project Overview
+
+*   **Type:** cursor_project_rules
+*   **Description:** Document describes the purpose, structure, features, and high-level architecture of an enterprise-grade clone of **Fomo** (real-time social-proof notifications) using Next.js 14, TypeScript, Tailwind CSS, Shadcn UI, Supabase, Clerk Auth, Kafka/Redis Streams, and related services.
+*   **Primary Goal:** Enable merchants to deliver low-latency, edge-cached real-time social-proof notifications across web pop-ups, email (SendGrid), and push (Firebase), with integrated A/B testing, analytics, and enterprise features under a unified dashboard.
+
+## Project Structure
+
+### Framework-Specific Routing
+
+*   **Directory Rules:**
+
+    *   Next.js 14 (App Router): Use `app/[route]/page.tsx` for all pages, `app/[route]/layout.tsx` for nested layouts, and `app/api/[endpoint]/route.ts` for API handlers.
+    *   Example 1: `app/auth/signin/page.tsx` (Sign-In page with server actions).
+    *   Example 2: `app/dashboard/page.tsx` (Main Dashboard view under App Router conventions).
+
+### Core Directories
+
+*   **Versioned Structure:**
+
+    *   `app/api`: Next.js 14 API routes with Route Handlers (e.g., webhooks, data endpoints).
+    *   `app/components`: Shared React components (Shadcn UI primitives themed with Tailwind).
+    *   `app/hooks`: Custom React hooks (e.g., `useToast`, `useMobile`).
+    *   `app/lib`: Utility functions and data-access helpers.
+    *   `app/types`: TypeScript types (generated DB schemas, API contracts).
+    *   `app/utils`: Feature-specific utilities (Stripe, Supabase, OpenAI integrations).
+
+### Key Files
+
+*   **Stack-Versioned Patterns:**
+
+    *   `app/layout.tsx`: Next.js 14 root `Layout` for consistent global styling and providers.
+    *   `app/globals.css`: Global Tailwind CSS imports and custom base styles.
+    *   `app/page.tsx`: Next.js 14 root `page.tsx` for the marketing or landing page.
+    *   `app/api/webhooks/route.ts`: Next.js 14 Route Handler for incoming HMAC-signed webhooks.
+
+## Tech Stack Rules
+
+*   **Version Enforcement:**
+
+    *   next@14: App Router mandatory, no `pages/` directory or `getInitialProps`.
+    *   typescript@5: `strict` mode, no `any`, enforce path aliases in `tsconfig.json`.
+    *   <tailwindcss@3.x>: JIT mode required, purge unused classes via `content` config.
+    *   supabase@latest: Use Row Level Security (RLS) and migrations via Supabase CLI.
+    *   clerk@latest: Enforce middleware protection on all `app/` routes.
+
+## PRD Compliance
+
+*   **Non-Negotiable:**
+
+    *   "Invitation-only team onboarding, roles (Admin, Analyst, Designer)": must enforce Admin-triggered invites only.
+    *   "Raw event retention for 90 days, archival to S3 Glacier": implement automatic archival strategy.
+    *   "Sub-100 ms notification delivery time (edge-cached)": use multi-layer caching (Cloudflare/Vercel Edge → Redis → SW).
+
+## App Flow Integration
+
+*   **Stack-Aligned Flow:**
+
+    *   Next.js 14 Auth Flow → `app/auth/signin/page.tsx` uses Clerk server actions for sign-in and redirects.
+    *   Main Dashboard Flow → `app/dashboard/page.tsx` fetches live metrics via React Query on the Edge.
+    *   Notification Builder Flow → `app/notifications/new/page.tsx` with nested steps under `app/notifications/new/(wizard)`.
+
+## Best Practices
+
+*   Next.js 14
+
+    *   Use App Router and `layout.tsx` for shared UI shells.
+    *   Leverage Server Components for data heavy pages.
+    *   Use Middleware for auth and i18n redirects.
+
+*   TypeScript
+
+    *   Enable `strict` and `noImplicitAny`.
+    *   Use discriminated unions for variant types.
+    *   Leverage `zod` or `io-ts` for runtime validation.
+
+*   Tailwind CSS
+
+    *   Configure JIT and purge safelist for dynamic classes.
+    *   Use design tokens (`theme.extend`) for brand theming.
+    *   Avoid inline `!important` overrides; use `@apply`.
+
+*   Shadcn UI
+
+    *   Compose primitives into domain-specific components.
+    *   Override with Tailwind theme tokens only.
+    *   Ensure WCAG 2.1 AA compliance on all components.
+
+*   Supabase (PostgreSQL)
+
+    *   Enforce Row Level Security for multi-tenant data isolation.
+    *   Use connection pooling (pgbouncer) in serverless contexts.
+    *   Manage schema changes via SQL migration scripts.
+
+*   TimescaleDB
+
+    *   Leverage hypertables partitioned by time.
+    *   Use retention policies for automatically dropping old chunks.
+    *   Downsample high-frequency data for long-term analytics.
+
+*   ClickHouse
+
+    *   Use `MergeTree` engines with primary keys for fast aggregations.
+    *   Define TTL for auto-purging old data.
+    *   Optimize queries with distributed tables for scale.
+
+*   Apache Kafka
+
+    *   Partition by `site_id` for ordered event streams.
+    *   Monitor consumer lag and broker health.
+    *   Configure appropriate retention and compaction.
+
+*   Redis Streams
+
+    *   Use consumer groups for scalable processing.
+    *   Trim streams with `MAXLEN` to bound memory.
+    *   Acknowledge and handle pending entries on consumer restart.
+
+*   Clerk Auth
+
+    *   Protect server actions and API routes with Clerk middleware.
+    *   Use SCIM for enterprise provisioning.
+    *   Store session tokens in secure, HttpOnly cookies.
+
+*   React Query
+
+    *   Use `staleTime` and `cacheTime` strategically.
+    *   Cancel redundant queries on component unmount.
+    *   Normalize query keys to avoid cache bloat.
+
+*   Zustand
+
+    *   Split state into logical slices.
+    *   Use `persist` middleware only for UI preferences.
+    *   Avoid storing large arrays or objects unnecessarily.
+
+*   TanStack Router
+
+    *   Define nested route loaders for controlled data fetching.
+    *   Prefetch on link hover for improved UX.
+    *   Leverage route action mutations for server writes.
+
+*   SendGrid
+
+    *   Verify custom domains and sender identities.
+    *   Use dynamic templates for A/B variants.
+    *   Monitor bounces and unsubscribes via webhooks.
+
+*   Firebase Push
+
+    *   Use VAPID keys and service worker registration.
+    *   Handle foreground and background message events.
+    *   Manage subscription lifecycle and permission prompts.
+
+*   Shopify Connector
+
+    *   Use GraphQL Admin API v2023-10 for bulk operations.
+    *   Respect rate limiting with client-side throttling.
+    *   Secure webhooks with HMAC signature validation.
+
+*   WooCommerce Connector
+
+    *   Use REST API v3 with OAuth 1.0a authentications.
+    *   Cache common requests (products, orders) with Redis.
+    *   Validate event payloads before processing.
+
+*   Zapier Connector
+
+    *   Define strict input/output schemas for triggers/actions.
+    *   Use fallback error handling on network failures.
+    *   Throttle calls to avoid hitting rate limits.
+
+*   REST/GraphQL Webhooks
+
+    *   Sign payloads with HMAC and verify on receipt.
+    *   Retry failed deliveries with exponential back-off.
+    *   Document event schemas and version changes.
+
+*   OpenAI
+
+    *   Use fine-tuned or chat models for AI tasks.
+    *   Validate prompt inputs to avoid injection.
+    *   Handle rate-limit errors gracefully.
+
+*   AWS SageMaker
+
+    *   Use multi-model endpoints for cost efficiency.
+    *   Monitor invocation latency and errors.
+    *   Auto-scale endpoints based on traffic patterns.
+
+*   Kong API Gateway
+
+    *   Enforce RBAC and rate limit per API key.
+    *   Use JWT plugin for token validation.
+    *   Log requests to centralized logging.
+
+*   EKS
+
+    *   Use managed node groups with autoscaling.
+    *   Deploy workloads with PodDisruptionBudgets.
+    *   Secure pods with IAM Roles for Service Accounts.
+
+*   Terraform
+
+    *   Pin provider versions and use state locking.
+    *   Modularize resources by domain (network, infra, app).
+    *   Use `terraform fmt` and `terraform validate` in CI.
+
+*   GitHub Actions
+
+    *   Pin actions to full SHAs.
+    *   Use reusable workflows for CI/CD patterns.
+    *   Store secrets in GitHub Secrets with least privileges.
+
+*   Argo Rollouts
+
+    *   Implement canary and blue/green strategies.
+    *   Automate promotion based on metric analysis.
+    *   Define rollback criteria in manifest.
+
+*   Cloudflare
+
+    *   Cache static assets at edge with long TTL.
+    *   Use Workers for custom routing or auth.
+    *   Enable Bot Management and WAF policies.
+
+*   Vercel Edge
+
+    *   Use Edge Middleware for geo-routing.
+    *   Deploy API routes as Edge Functions.
+    *   Leverage ISR and On-Demand Revalidation.
+
+*   OpenTelemetry
+
+    *   Instrument all HTTP/gRPC calls.
+    *   Propagate context using B3 or W3C tracers.
+    *   Sample at 1% for high-volume services.
+
+*   Prometheus
+
+    *   Use service discovery for dynamic targets.
+    *   Define recording rules for common aggregates.
+    *   Create alerting rules with clear severity.
+
+*   Grafana
+
+    *   Store dashboards as JSON in Git.
+    *   Use template variables for reusable panels.
+    *   Secure access via SSO and RBAC.
+
+*   Jaeger
+
+    *   Batch export spans to storage backend.
+    *   Visualize service dependencies and traces.
+    *   Set TTL for trace data retention.
+
+*   Loki
+
+    *   Label logs by service, level, and instance.
+    *   Use chunked storage for large streams.
+    *   Implement retention policies per label.
+
+*   S3 Glacier
+
+    *   Use lifecycle rules to transition objects.
+    *   Encrypt archives with SSE-KMS.
+    *   Tag archives for cost allocation.
+
+## Rules
+
+*   Derive folder and file patterns **directly** from the exact versions in the tech stack documentation.
+*   If using Next.js 14 App Router: enforce an `app/` directory with nested route folders; never use a `pages/` directory.
+*   If using React Router 6: place route definitions under `src/routes/` and use `createBrowserRouter`.
+*   Apply the same versioned logic for SvelteKit, Vue 3, etc., as dictated by their respective major versions.
+*   Never mix routing paradigms (e.g., no `pages/` in App Router projects or no `app/` in Pages Router setups).
+
+## Rules Metrics
+
+Before starting the project development, create a metrics file in the root of the project called `cursor_metrics.md`.
+
+### Instructions:
+
+*   Each time a cursor rule is used as context, update `cursor_metrics.md`.
+*   Use the following format for `cursor_metrics.md`:
+
+`# Rules Metrics ## Usage The number of times rules is used as context * rule-name.mdc: 5 * another-rule.mdc: 2 * ...other rules`

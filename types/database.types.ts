@@ -132,6 +132,86 @@ export type Database = {
                 }
                 Relationships: []
             }
+            site_verifications: {
+                Row: {
+                    id: string
+                    site_id: string
+                    method: string
+                    status: string
+                    verification_data: Json | null
+                    verified_at: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    site_id: string
+                    method: string
+                    status?: string
+                    verification_data?: Json | null
+                    verified_at?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    site_id?: string
+                    method?: string
+                    status?: string
+                    verification_data?: Json | null
+                    verified_at?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "site_verifications_site_id_fkey"
+                        columns: ["site_id"]
+                        isOneToOne: false
+                        referencedRelation: "sites"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            sites: {
+                Row: {
+                    id: string
+                    owner_id: string
+                    name: string
+                    domain: string
+                    status: string
+                    verification_token: string | null
+                    embed_code: string | null
+                    settings: Json
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    owner_id: string
+                    name: string
+                    domain: string
+                    status?: string
+                    verification_token?: string | null
+                    embed_code?: string | null
+                    settings?: Json
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    owner_id?: string
+                    name?: string
+                    domain?: string
+                    status?: string
+                    verification_token?: string | null
+                    embed_code?: string | null
+                    settings?: Json
+                    created_at?: string
+                    updated_at?: string
+                }
+                Relationships: []
+            }
             subscriptions: {
                 Row: {
                     cancel_at: string | null

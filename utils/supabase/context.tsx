@@ -12,7 +12,7 @@ export function SupabaseProvider({ children }: { children: ReactNode }) {
     const supabase = useMemo(() => {
         return createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_KEY!,
+            process.env.SUPABASE_KEY!,
             {
                 global: {
                     fetch: async (url, options = {}) => {
