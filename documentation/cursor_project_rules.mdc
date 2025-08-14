@@ -1,0 +1,98 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+## Project Overview
+
+* **Type:** cursor_project_rules
+* **Description:** This repository, `codeguide-starter-pro`, appears to be a starter project for a modern web application, built with Next.js App Router, TypeScript, and AI-driven code guidance.
+* **Primary Goal:** Provide a production-ready Next.js starter template with App Router, TypeScript, and integrated AI-guided code standards.
+
+## Project Structure
+
+### Framework-Specific Routing
+
+* **Directory Rules:**
+    * Next.js 14 (App Router): `app/[route]/page.tsx` conventions
+    * Next.js (Pages Router): `pages/[route].tsx` pattern
+    * React Router 6: `src/routes/` with `createBrowserRouter`
+
+### Core Directories
+
+* **Versioned Structure:**
+    * app/api: Next.js 14 API routes with Route Handlers
+    * components: Shared React UI components
+    * fonts: Custom font assets loaded via Next.js font optimization
+    * .cursor/rules: Cursor IDE AI-assisted code guidance rules
+
+### Key Files
+
+* **Stack-Versioned Patterns:**
+    * app/layout.tsx: Next.js 14 root layout (metadata, global providers)
+    * app/page.tsx: Next.js 14 root page component
+    * app/api/webhooks/route.ts: Next.js 14 API Route Handler for webhooks
+    * globals.css: Global stylesheet imported at root layout
+
+## Tech Stack Rules
+
+* **Version Enforcement:**
+    * next@14: App Router required, no `getInitialProps`
+    * react@18: Use functional components with Hooks and Server Components
+    * typescript@4.9: Strict mode enabled, explicit return types
+
+## PRD Compliance
+
+* No PRD provided: adhere to general Next.js 14 and AI-guidance rules
+
+## App Flow Integration
+
+* **Stack-Aligned Flow:**
+    * Next.js 14 Main Page Flow → `app/page.tsx` uses Server Components
+    * Next.js 14 Layout Flow → `app/layout.tsx` sets up providers and global UI
+    * Next.js 14 Webhook Flow → `app/api/webhooks/route.ts` uses Route Handlers
+
+## Best Practices
+
+* Next.js
+    * Use the App Router for all new routes in `app/`
+    * Co-locate data fetching with UI in Server Components
+    * Employ Route Handlers for API endpoints
+* React
+    * Favor function components and React Hooks
+    * Use React Server Components where beneficial
+    * Avoid direct DOM manipulation; use refs and state
+* TypeScript
+    * Enable `strict` mode in tsconfig.json
+    * Define explicit return types for all functions
+    * Use discriminated unions for component props
+
+## Rules
+
+* Derive folder/file patterns directly from `techStackDoc` versions
+* If Next.js 14 App Router: enforce `app/` directory with nested route folders
+* If Pages Router: use `pages/*.tsx` flat structure
+* Mirror this logic for React Router, SvelteKit, etc.
+* Never mix version patterns (no `pages/` in App Router projects)
+
+## Rules Metrics
+
+Before starting the project development, create a metrics file in the root of the project called
+
+`cursor_metrics.md`.
+
+### Instructions:
+
+* Each time a cursor rule is used as context, update `cursor_metrics.md`.
+* Use the following format for `cursor_metrics.md`:
+
+    # Rules Metrics
+
+    ## Usage
+    The number of times rules is used as context
+
+    * rule-name.mdc: 5
+    * another-rule.mdc: 2
+    * ...other rules
